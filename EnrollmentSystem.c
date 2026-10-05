@@ -1,25 +1,3 @@
-/*
-    *ENROLLMENT SYSTEM*
-
-    MGA GUSTO KO MANGYARE:
-    1. MAGDISPLAY NG LANDING PAGE
-    2. MAGKAROON NG THREE FUNCTIONS:
-        1.) ENROLL
-            - SELECT COURSE/PROGRAM
-            - FILL UP BASIC INFORMATION
-                - SHOULD AGREE TO TERMS AND CONDITIONS
-                - FULL NAME
-                - AGE
-                - NATIONALITY
-                - GENERAL WEIGHTED AVERAGE
-                - DATE OF BIRTH
-                - CONTACT NUMBER: +63 
-        2.) VIEW YUNG MGA PROGRAMS NA INOOFFER
-        3.) ABOUT THE UNIVERSITY
-        4.) EXIT
-
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
@@ -29,16 +7,18 @@
 typedef struct {
     char FullName[50];
     int Age;
+    char Gender[10];
     char Nationality[15];
     char DateOfBirth[30];
     char ContactNumber[13];
 
     struct {
-        char JuniorHighSchool[50];
-        char SeniorHighSchool[50];
+        char JuniorHighSchoolName[50];
+        char JuniorAcademicYear[11];
+        char SeniorHighSchoolName[50];
+        char SeniorAcademicYear[11];
         double GWA;
     } Education;
-    
 
     struct {
         char FullName[50];
@@ -102,6 +82,12 @@ int displayDashboard() {
     
 }
 
+void invalid() {
+
+    printf("\n\nINVALID INPUT!");
+    printf("\nPLEASE TRY AGAIN");
+}
+
 void Terms_and_Conditions(int *select) {
 
     printf("\n");
@@ -131,18 +117,25 @@ void Terms_and_Conditions(int *select) {
 
 }
 
-void Registration(Student student[10], int *studentCount) {
+void Registration(Student student[10], int *studentCount, Program program[5], int *choice) {
 
-    int valid[3] = {0};
+    int valid[4] = {0};
     int editChoice = 0;
 
-    
         system("cls");
         printf("\n");
         printf("+-----------------------------------------------------------------+\n");
         printf("|                       REGISTRATION FORM                         |\n");
         printf("+-----------------------------------------------------------------+\n\n");
-        printf("                    | STUDENT'S INFORMATION |                      \n");
+        printf("                    | STUDENT'S INFORMATION |                      \n\n");
+
+        for (int i = 0; i < 8; i++)
+        {
+            printf("[%d] %-6s- %s \n", (i + 1), program[i].Code, program[i].Name);
+            printf("-------------------------------------------------------------------\n");
+        }
+        printf("\nCHOOSE YOUR PROGRAM:  ");
+        scanf("%d", choice);
 
         getchar();
         printf("\nFULL NAME: ");
@@ -165,28 +158,38 @@ void Registration(Student student[10], int *studentCount) {
         fgets(student[*studentCount].ContactNumber, sizeof(student[*studentCount].ContactNumber), stdin);
         student[*studentCount].ContactNumber[strcspn(student[*studentCount].ContactNumber, "\n")] = '\0';
         
-        
-    
     
     do
     {
         system("cls");
         printf("\n");
-        printf("+-----------------------------------------------------------------+\n");
-        printf("|                    REVIEW YOUR INFORMATION                      |\n");
-        printf("+-----------------------------------------------------------------+\n");
-        printf("[1] FULL NAME                : %s                                  \n", student[*studentCount].FullName);
-        printf("[2] AGE                      : %d YEARS OLD                        \n", student[*studentCount].Age);
-        printf("[3] NATIONALITY              : %s                                  \n", student[*studentCount].Nationality);
-        printf("[4] DATE OF BIRTH            : %s                                  \n", student[*studentCount].DateOfBirth);
-        printf("[5] CONTACT NUMBER           : +63 %s                              \n", student[*studentCount].ContactNumber);
-        printf("+-----------------------------------------------------------------+\n");
-        printf("\n[0] SUBMIT\n");
-        printf("\nDO YOU WISH TO EDIT YOUR INFORMATION[0-6]: ");
+        printf("+----------------------------------------------------------------------------------------+\n");
+        printf("|                                REVIEW YOUR INFORMATION                                 |\n");
+        printf("+----------------------------------------------------------------------------------------+\n\n");
+        printf(" [1] PROGRAM        : %s - %s                                                \n", program[*choice - 1].Code, program[*choice - 1].Name);
+        printf(" [2] FULL NAME      : %s                                                     \n", student[*studentCount].FullName);
+        printf(" [3] AGE            : %d                                                     \n", student[*studentCount].Age);
+        printf(" [4] NATIONALITY    : %s                                                     \n", student[*studentCount].Nationality);
+        printf(" [5] DATE OF BIRTH  : %s                                                     \n", student[*studentCount].DateOfBirth);
+        printf(" [6] CONTACT NUMBER : +63 %s                                                 \n\n", student[*studentCount].ContactNumber);
+        printf("+----------------------------------------------------------------------------------------+\n");
+        printf("\n [0] SUBMIT\n");
+        printf("\n DO YOU WISH TO EDIT YOUR INFORMATION [CHOOSE FORM 1-6]: ");
         scanf("%d", &editChoice);
 
         system("cls");
         if (editChoice == 1)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                printf("[%d] %-6s- %s \n", (i + 1), program[i].Code, program[i].Name);
+                printf("-------------------------------------------------------------------\n");
+            }
+            printf("\nCHOOSE YOUR PROGRAM: ");
+            scanf("%d", choice);
+            valid[0] = 0;
+        }
+        else if (editChoice == 2)
         {
             getchar();
             printf("\nFULL NAME: ");
@@ -194,13 +197,13 @@ void Registration(Student student[10], int *studentCount) {
             student[*studentCount].FullName[strcspn(student[*studentCount].FullName, "\n")] = '\0';
             valid[0] = 0;
         }
-        else if (editChoice == 2)
+        else if (editChoice == 3)
         {
             printf("\nAGE: ");
             scanf("%d", &student[*studentCount].Age);
             valid[0] = 0;
         }
-        else if (editChoice == 3)
+        else if (editChoice == 4)
         {
             getchar();
             printf("\nNATIONALITY: ");
@@ -209,7 +212,7 @@ void Registration(Student student[10], int *studentCount) {
 
             valid[0] = 0;
         }
-        else if (editChoice == 4)
+        else if (editChoice == 5)
         {
             getchar();
             printf("\nDATE OF BIRTH(MM/DD/YY): ");
@@ -217,7 +220,7 @@ void Registration(Student student[10], int *studentCount) {
             student[*studentCount].DateOfBirth[strcspn(student[*studentCount].DateOfBirth, "\n")] = '\0';
 
         }
-        else if (editChoice == 5)
+        else if (editChoice == 6)
         {
             getchar();
             printf("\nCONTACT NUMBER: +63 ");
@@ -228,10 +231,14 @@ void Registration(Student student[10], int *studentCount) {
         else if (editChoice == 0)
         {
             printf("\nPROCESSING . . . .\n");
+            Sleep(3000);
+            printf("\nSAVED CHANGES!\n");
+            Sleep(3000);
             valid[0] = 1;
         }
         else
         {
+            invalid();
             valid[0] = 0;
         }
           
@@ -241,8 +248,108 @@ void Registration(Student student[10], int *studentCount) {
         printf("\n");
         printf("+-----------------------------------------------------------------+\n");
         printf("|                       REGISTRATION FORM                         |\n");
+        printf("+-----------------------------------------------------------------+\n");
+        printf("                     | EDUCATION BACKGROUND |                      \n\n");
+
+        getchar();
+        printf("\nPREVIOUS JUNIOR HIGH SCHOOL: ");
+        fgets(student[*studentCount].Education.JuniorHighSchoolName, sizeof(student[*studentCount].Education.JuniorHighSchoolName), stdin);
+        student[*studentCount].Education.JuniorHighSchoolName[strcspn(student[*studentCount].Education.JuniorHighSchoolName, "\n")] = '\0';
+
+        printf("\nACADEMIC YEAR (JHS): ");
+        fgets(student[*studentCount].Education.JuniorAcademicYear, sizeof(student[*studentCount].Education.JuniorAcademicYear), stdin);
+        student[*studentCount].Education.JuniorAcademicYear[strcspn(student[*studentCount].Education.JuniorAcademicYear, "\n")] = '\0';
+
+        printf("\nPREVIOUS SENIOR HIGH SCHOOL: ");
+        fgets(student[*studentCount].Education.SeniorHighSchoolName, sizeof(student[*studentCount].Education.SeniorHighSchoolName), stdin);
+        student[*studentCount].Education.SeniorHighSchoolName[strcspn(student[*studentCount].Education.SeniorHighSchoolName, "\n")] = '\0';
+
+        printf("\nACADEMIC YEAR (SHS): ");
+        fgets(student[*studentCount].Education.SeniorAcademicYear, sizeof(student[*studentCount].Education.SeniorAcademicYear), stdin);
+        student[*studentCount].Education.SeniorAcademicYear[strcspn(student[*studentCount].Education.SeniorAcademicYear, "\n")] = '\0';
+
+        printf("\nGENERAL WEIGHTED AVERAGE: ");
+        scanf("%lf", &student[*studentCount].Education.GWA);
+
+        do
+        {
+            system("cls");
+            printf("\n");
+            printf("+----------------------------------------------------------------------------------------+\n");
+            printf("|                                REVIEW YOUR INFORMATION                                 |\n");
+            printf("+----------------------------------------------------------------------------------------+\n\n");
+            printf(" [1] PREVIOUS JUNIOR HIGH SCHOOL   : %s                    \n", student[*studentCount].Education.JuniorHighSchoolName);
+            printf(" [2] ACADEMIC YEAR (JHS)           : %s                    \n", student[*studentCount].Education.JuniorAcademicYear);
+            printf(" [3] PREVIOUS SENIOR HIGH SCHOOL   : %s                    \n", student[*studentCount].Education.SeniorHighSchoolName);
+            printf(" [4] ACADEMIC YEAR (SHS)           : %s                    \n", student[*studentCount].Education.SeniorAcademicYear);
+            printf(" [5] GENERAL WEIGHTED AVERAGE      : %.2lf                    \n\n", student[*studentCount].Education.GWA);
+            printf("+----------------------------------------------------------------------------------------+\n");
+            printf("\n [0] SUBMIT\n");
+            printf("\n DO YOU WISH TO EDIT YOUR INFORMATION [CHOOSE FROM 1-5]: ");
+            scanf("%d", &editChoice);
+
+        system("cls");
+        if (editChoice == 1)
+        {
+            getchar();
+            printf("\nPREVIOUS JUNIOR HIGH SCHOOL: ");
+            fgets(student[*studentCount].Education.JuniorHighSchoolName, sizeof(student[*studentCount].Education.JuniorHighSchoolName), stdin);
+            student[*studentCount].Education.JuniorHighSchoolName[strcspn(student[*studentCount].Education.JuniorHighSchoolName, "\n")] = '\0';
+            valid[1] = 0;
+        }
+        else if (editChoice == 2)
+        {
+            getchar();
+            printf("\nACADEMIC YEAR (JHS): ");
+            fgets(student[*studentCount].Education.JuniorAcademicYear, sizeof(student[*studentCount].Education.JuniorAcademicYear), stdin);
+            student[*studentCount].Education.JuniorAcademicYear[strcspn(student[*studentCount].Education.JuniorAcademicYear, "\n")] = '\0';
+            valid[1] = 0;
+        }
+        else if (editChoice == 3)
+        {
+            getchar();
+            printf("\nPREVIOUS SENIOR HIGH SCHOOL: ");
+            fgets(student[*studentCount].Education.SeniorHighSchoolName, sizeof(student[*studentCount].Education.SeniorHighSchoolName), stdin);
+            student[*studentCount].Education.SeniorHighSchoolName[strcspn(student[*studentCount].Education.SeniorHighSchoolName, "\n")] = '\0';
+            valid[1] = 0;
+        }
+        else if (editChoice == 4)
+        {
+            getchar();
+            printf("\nACADEMIC YEAR (SHS): ");
+            fgets(student[*studentCount].Education.SeniorAcademicYear, sizeof(student[*studentCount].Education.SeniorAcademicYear), stdin);
+            student[*studentCount].Education.SeniorAcademicYear[strcspn(student[*studentCount].Education.SeniorAcademicYear, "\n")] = '\0';
+            valid[1] = 0;
+        }
+        else if (editChoice == 5)
+        {
+            printf("\nGENERAL WEIGHTED AVERAGE: ");
+            scanf("%lf", &student[*studentCount].Education.GWA);
+            valid[1] = 0;
+        }
+        
+        else if (editChoice == 0)
+        {
+            printf("\nPROCESSING . . . .\n");
+            Sleep(3000);
+            printf("\nSAVED CHANGES!\n");
+            Sleep(3000);
+            valid[1] = 1;
+        }
+        else
+        {
+            invalid();
+            valid[1] = 0;
+        }
+        } while (valid[1] != 1);
+        
+
+        system("cls");
+        printf("\n");
+        printf("+-----------------------------------------------------------------+\n");
+        printf("|                       REGISTRATION FORM                         |\n");
         printf("+-----------------------------------------------------------------+\n\n");
-        printf("                | STUDENT'S MOTHER INFORMATION |                      \n");
+        printf("                     | MOTHER'S INFORMATION |                      \n");
 
         getchar();
         printf("\nMOTHER'S FULL NAME: ");
@@ -261,15 +368,15 @@ void Registration(Student student[10], int *studentCount) {
     {
         system("cls");
         printf("\n");
-        printf("+-----------------------------------------------------------------+\n");
-        printf("|                    REVIEW YOUR INFORMATION                      |\n");
-        printf("+-----------------------------------------------------------------+\n");
-        printf("[1] MOTHER'S FULL NAME       : %s                                  \n", student[*studentCount].MotherInfo.FullName);
-        printf("[2] OCCUPATION               : %s                                  \n", student[*studentCount].MotherInfo.Occupation);
-        printf("[3] CONTACT NUMBER           : %s                                  \n", student[*studentCount].MotherInfo.ContactNumber);
-        printf("+-----------------------------------------------------------------+\n");
-        printf("\n[0] SUBMIT\n");
-        printf("\nDO YOU WISH TO EDIT YOUR INFORMATION[0-3]: ");
+        printf("+----------------------------------------------------------------------------------------+\n");
+        printf("|                                REVIEW YOUR INFORMATION                                 |\n");
+        printf("+----------------------------------------------------------------------------------------+\n\n");
+        printf(" [1] MOTHER'S FULL NAME       : %s                                  \n", student[*studentCount].MotherInfo.FullName);
+        printf(" [2] OCCUPATION               : %s                                  \n", student[*studentCount].MotherInfo.Occupation);
+        printf(" [3] CONTACT NUMBER           : %s                                  \n\n", student[*studentCount].MotherInfo.ContactNumber);
+        printf("+----------------------------------------------------------------------------------------+\n");
+        printf("\n [0] SUBMIT\n");
+        printf("\n DO YOU WISH TO EDIT YOUR INFORMATION [CHOOSE FROM 1-3]: ");
         scanf("%d", &editChoice);
 
         system("cls");
@@ -279,7 +386,7 @@ void Registration(Student student[10], int *studentCount) {
             printf("\nMOTHER'S FULL NAME: ");
             fgets(student[*studentCount].MotherInfo.FullName, sizeof(student[*studentCount].MotherInfo.FullName), stdin);
             student[*studentCount].MotherInfo.FullName[strcspn(student[*studentCount].MotherInfo.FullName, "\n")] = '\0';
-            valid[1] = 0;
+            valid[2] = 0;
         }
         else if (editChoice == 2)
         {
@@ -287,7 +394,7 @@ void Registration(Student student[10], int *studentCount) {
             printf("\nOCCUPATION: ");
             fgets(student[*studentCount].MotherInfo.Occupation, sizeof(student[*studentCount].MotherInfo.Occupation), stdin);
             student[*studentCount].MotherInfo.Occupation[strcspn(student[*studentCount].MotherInfo.Occupation, "\n")] = '\0';
-            valid[1] = 0;
+            valid[2] = 0;
         }
         else if (editChoice == 3)
         {
@@ -295,26 +402,30 @@ void Registration(Student student[10], int *studentCount) {
             printf("\nCONTACT NUMBER: +63 ");
             fgets(student[*studentCount].MotherInfo.ContactNumber, sizeof(student[*studentCount].MotherInfo.ContactNumber), stdin);
             student[*studentCount].MotherInfo.ContactNumber[strcspn(student[*studentCount].MotherInfo.ContactNumber, "\n")] = '\0';
-            valid[1] = 0;
+            valid[2] = 0;
         }
         else if (editChoice == 0)
         {
             printf("\nPROCESSING . . . .\n");
-            valid[1] = 1;
+            Sleep(3000);
+            printf("\nSAVED CHANGES!\n");
+            Sleep(3000);
+            valid[2] = 1;
         }
         else
         {
-            valid[1] = 0;
+            invalid();
+            valid[2] = 0;
         }
           
-    } while (valid[1] != 1);
+    } while (valid[2] != 1);
 
         system("cls");
         printf("\n");
         printf("+-----------------------------------------------------------------+\n");
         printf("|                       REGISTRATION FORM                         |\n");
         printf("+-----------------------------------------------------------------+\n\n");
-        printf("                | STUDENT'S FATHER INFORMATION |                      \n");
+        printf("                     | FATHER'S INFORMATION |                      \n");
 
         getchar();
         printf("\nFATHER'S FULL NAME: ");
@@ -333,15 +444,15 @@ void Registration(Student student[10], int *studentCount) {
     {
         system("cls");
         printf("\n");
-        printf("+-----------------------------------------------------------------+\n");
-        printf("|                    REVIEW YOUR INFORMATION                      |\n");
-        printf("+-----------------------------------------------------------------+\n");
-        printf("[1] FATHER'S FULL NAME       : %s                                  \n", student[*studentCount].FatherInfo.FullName);
-        printf("[2] OCCUPATION               : %s                                  \n", student[*studentCount].FatherInfo.Occupation);
-        printf("[3] CONTACT NUMBER           : %s                                  \n", student[*studentCount].FatherInfo.ContactNumber);
-        printf("+-----------------------------------------------------------------+\n");
-        printf("\n[0] SUBMIT\n");
-        printf("\nDO YOU WISH TO EDIT YOUR INFORMATION[0-3]: ");
+        printf("+----------------------------------------------------------------------------------------+\n");
+        printf("|                                REVIEW YOUR INFORMATION                                 |\n");
+        printf("+----------------------------------------------------------------------------------------+\n\n");
+        printf(" [1] FATHER'S FULL NAME       : %s                                  \n", student[*studentCount].FatherInfo.FullName);
+        printf(" [2] OCCUPATION               : %s                                  \n", student[*studentCount].FatherInfo.Occupation);
+        printf(" [3] CONTACT NUMBER           : %s                                  \n\n", student[*studentCount].FatherInfo.ContactNumber);
+        printf("+----------------------------------------------------------------------------------------+\n");
+        printf("\n [0] SUBMIT\n");
+        printf("\n DO YOU WISH TO EDIT YOUR INFORMATION [CHOOSE FROM 1-3]: ");
         scanf("%d", &editChoice);
 
         system("cls");
@@ -351,7 +462,7 @@ void Registration(Student student[10], int *studentCount) {
             printf("\nFATHER'S FULL NAME: ");
             fgets(student[*studentCount].FatherInfo.FullName, sizeof(student[*studentCount].FatherInfo.FullName), stdin);
             student[*studentCount].FatherInfo.FullName[strcspn(student[*studentCount].FatherInfo.FullName, "\n")] = '\0';
-            valid[2] = 0;
+            valid[3] = 0;
         }
         else if (editChoice == 2)
         {
@@ -359,7 +470,7 @@ void Registration(Student student[10], int *studentCount) {
             printf("\nOCCUPATION: ");
             fgets(student[*studentCount].FatherInfo.Occupation, sizeof(student[*studentCount].FatherInfo.Occupation), stdin);
             student[*studentCount].FatherInfo.Occupation[strcspn(student[*studentCount].FatherInfo.Occupation, "\n")] = '\0';
-            valid[2] = 0;
+            valid[3] = 0;
         }
         else if (editChoice == 3)
         {
@@ -367,104 +478,137 @@ void Registration(Student student[10], int *studentCount) {
             printf("\nCONTACT NUMBER: +63 ");
             fgets(student[*studentCount].FatherInfo.ContactNumber, sizeof(student[*studentCount].FatherInfo.ContactNumber), stdin);
             student[*studentCount].FatherInfo.ContactNumber[strcspn(student[*studentCount].FatherInfo.ContactNumber, "\n")] = '\0';
-            valid[2] = 0;
+            valid[3] = 0;
         }
         else if (editChoice == 0)
         {
             printf("\nPROCESSING . . . .\n");
-            valid[2] = 1;
+            Sleep(3000);
+            printf("\nSAVED CHANGES!\n");
+            Sleep(3000);
+            valid[3] = 1;
         }
         else
         {
-            valid[2] = 0;
+            invalid();
+            valid[3] = 0;
         }
           
-    } while (valid[2] != 1);
+    } while (valid[3] != 1);
 
         system("cls");
         printf("\n");
-        printf("+-----------------------------------------------------------------+\n");
-        printf("|                      STUDENT INFORMATION                        |\n");
-        printf("+-----------------------------------------------------------------+\n");
-        printf(" -> FULL NAME                : %s                                  \n", student[*studentCount].FullName);
-        printf(" -> AGE                      : %d YEARS OLD                        \n", student[*studentCount].Age);
-        printf(" -> NATIONALITY              : %s                                  \n", student[*studentCount].Nationality);
-        printf(" -> DATE OF BIRTH            : %s                                  \n", student[*studentCount].DateOfBirth);
-        printf(" -> CONTACT NUMBER           : +63 %s                              \n", student[*studentCount].ContactNumber);
-        printf("+-----------------------------------------------------------------+\n\n");
-        printf("+-----------------------------------------------------------------+\n");
-        printf("|                  STUDENT'S MOTHER INFORMATION                   |\n");
-        printf("+-----------------------------------------------------------------+\n");
-        printf(" -> MOTHER'S FULL NAME       : %s                                  \n", student[*studentCount].FatherInfo.FullName);
-        printf(" -> OCCUPATION               : %s                                  \n", student[*studentCount].FatherInfo.Occupation);
-        printf(" -> CONTACT NUMBER           : %s                                  \n", student[*studentCount].FatherInfo.ContactNumber);
-        printf("+-----------------------------------------------------------------+\n\n");
-        printf("+-----------------------------------------------------------------+\n");
-        printf("|                  STUDENT'S FATHER INFORMATION                   |\n");
-        printf("+-----------------------------------------------------------------+\n");
-        printf(" -> FATHER'S FULL NAME       : %s                                  \n", student[*studentCount].FatherInfo.FullName);
-        printf(" -> OCCUPATION               : %s                                  \n", student[*studentCount].FatherInfo.Occupation);
-        printf(" -> CONTACT NUMBER           : %s                                  \n", student[*studentCount].FatherInfo.ContactNumber);
-        printf("+-----------------------------------------------------------------+\n");
-        printf("\nPRESS [ENTER] TO SUBMIT & FINISH REGISTRATION: ");
+        printf("+----------------------------------------------------------------------------------------+\n");
+        printf("|                                STUDENT'S INFORMATION                                   |\n");
+        printf("+----------------------------------------------------------------------------------------+\n\n");
+        printf(" -> PROGRAM                      : %s - %s                             \n", program[*choice - 1].Code, program[*choice - 1].Name);
+        printf(" -> FULL NAME                    : %s                                  \n", student[*studentCount].FullName);
+        printf(" -> AGE                          : %d YEARS OLD                        \n", student[*studentCount].Age);
+        printf(" -> NATIONALITY                  : %s                                  \n", student[*studentCount].Nationality);
+        printf(" -> DATE OF BIRTH                : %s                                  \n", student[*studentCount].DateOfBirth);
+        printf(" -> CONTACT NUMBER               : +63 %s                              \n\n", student[*studentCount].ContactNumber);
+        printf("+----------------------------------------------------------------------------------------+\n\n");
+        printf("+----------------------------------------------------------------------------------------+\n");
+        printf("|                                EDUCATION BACKGROUND                                    |\n");
+        printf("+----------------------------------------------------------------------------------------+\n\n");
+        printf(" -> PREVIOUS JUNIOR HIGH SCHOOL  : %s                    \n", student[*studentCount].Education.JuniorHighSchoolName);
+        printf(" -> ACADEMIC YEAR (JHS)          : %s                    \n", student[*studentCount].Education.JuniorAcademicYear);
+        printf(" -> PREVIOUS SENIOR HIGH SCHOOL  : %s                    \n", student[*studentCount].Education.SeniorHighSchoolName);
+        printf(" -> ACADEMIC YEAR (SHS)          : %s                    \n", student[*studentCount].Education.SeniorAcademicYear);
+        printf(" -> GENERAL WEIGHTED AVERAGE     : %.2lf                    \n\n", student[*studentCount].Education.GWA);
+        printf("+----------------------------------------------------------------------------------------+\n\n");
+        printf("+----------------------------------------------------------------------------------------+\n");
+        printf("|                                 MOTHER INFORMATION                                     |\n");
+        printf("+----------------------------------------------------------------------------------------+\n\n");
+        printf(" -> MOTHER'S FULL NAME           : %s                                  \n", student[*studentCount].MotherInfo.FullName);
+        printf(" -> OCCUPATION                   : %s                                  \n", student[*studentCount].MotherInfo.Occupation);
+        printf(" -> CONTACT NUMBER               : %s                                  \n\n", student[*studentCount].MotherInfo.ContactNumber);
+        printf("+----------------------------------------------------------------------------------------+\n\n");
+        printf("+----------------------------------------------------------------------------------------+\n");
+        printf("|                                 FATHER INFORMATION                                     |\n");
+        printf("+----------------------------------------------------------------------------------------+\n\n");
+        printf(" -> FATHER'S FULL NAME           : %s                                  \n", student[*studentCount].FatherInfo.FullName);
+        printf(" -> OCCUPATION                   : %s                                  \n", student[*studentCount].FatherInfo.Occupation);
+        printf(" -> CONTACT NUMBER               : %s                                  \n\n", student[*studentCount].FatherInfo.ContactNumber);
+        printf("+----------------------------------------------------------------------------------------+\n");
+        printf("\n PRESS [ENTER] TO SUBMIT & FINISH REGISTRATION: ");
         getch();
-    
-    (*studentCount)++;
+
+        printf("\n\nPROCESSING . . . .");
+        Sleep(5000);
+        printf("\nCONGRATULATIONS! YOU'RE ENROLLED.\n");
+        Sleep(3000);
+        (*studentCount)++;
 
 }
-
-void invalid() {
-
-    printf("\n\nINVALID INPUT!");
-    printf("\nPLEASE TRY AGAIN");
-}
-
 
 int main() {
 
-    Program program[5] = {
+    Program program[8] = {
         {
-            "Bachelor of Science in Information Technology",
+            "BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY",
             "BSIT",
-            "Computer Studies Department",
+            "COMPUTER STUDIES DEPARTMENT",
             150
         },
         {
-            "Bachelor of Science in Information System",
+            "BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY",
             "BSIS",
-            "Computer Studies Department",
+            "COMPUTER STUDIES DEPARTMENT",
             146
         },
         {
-            "Bachelor of Science in Computer Science",
+            "BACHELOR OF SCIENCE IN COMPUTER SCIENCE",
             "BSCS",
-            "Computer Studies Department",
+            "COMPUTER STUDIES DEPARTMENT",
             153
         },
         {
-            "Bachelor of Science in Entertainment and Multimedia Computing",
+            "BACHELOR OF SCIENCE IN ENTERTAINMENT AND MULTIMEDIA COMPUTING",
             "BSEMC",
-            "Computer Studies Department",
+            "COMPUTER STUDIES DEPARTMENT",
             143
         },
         {
-            "Bachelor of Science in Computer Engineering",
+            "BACHELOR OF SCIENCE IN COMPUTER ENGINEERING",
             "BSCpE",
-            "Computer Studies Department",
+            "COLLEGE OF ENGINEERING",
             156
+        },
+        {
+            "BACHELOR OF SCIENCE IN ELECTONICS ENGINEERING",
+            "BSECE",
+            "COLLEGE OF ENGINEERING",
+            154
+        },
+        {
+            "BACHELOR OF SCIENCE IN CHEMICAL ENGINEERING",
+            "BSCHE",
+            "COLLEGE OF ENGINEERING",
+            157
+        },
+        {
+            "BACHELOR OF SCIENCE IN MECHANICAL ENGINEERING",
+            "BSME",
+            "COLLEGE OF ENGINEERING",
+            157
         }
+        
     };
 
     Student student[10];
     int studentCount = 0;
+
     int userChoice = 0;
+
     int limit = 10;
 
-    int agreeToTerms = 0;
+    int getUserProgramChoice = 0;
 
     // FLAG VARIABLE
 
     char wishToReturn = '\0';
+    int agreeToTerms = 0;
 
     int doneViewing = 0;
     int getUserChoiceToExitPage = 0;
@@ -486,7 +630,7 @@ int main() {
 
                 if (agreeToTerms == 1)
                 {
-                    Registration(student, &studentCount);
+                    Registration(student, &studentCount, program, &getUserProgramChoice);
                 }
                 else
                 {
@@ -506,7 +650,7 @@ int main() {
             printf("|                         PROGRAM OFFERED                         |\n");
             printf("+-----------------------------------------------------------------+\n");
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 8; i++)
             {
                 printf("\nPROGRAM\t    : %-70s", program[i].Name);
                 printf("\nCODE\t    : %-70s", program[i].Code);
